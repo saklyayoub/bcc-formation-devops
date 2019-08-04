@@ -181,3 +181,19 @@ We can user `$ sudo service docker ${command}` or we can use `$ sudo systemctl d
 **Block until one or more containers stop, then print their exit codes**
 
     $ sudo docker container wait CONTAINER [CONTAINER...]
+## Docker image
+**Gets a list of downloaded image in your local registry**
+
+    $ sudo docker images
+
+**Download image from dockerhub registry**
+
+    $ sudo docker pull IMAGE NAME
+
+**Upload image into docker hub registry**
+
+    $ sudo docker push IMAGE NAME
+
+**Remove image from your local registry**
+
+    $ sudo docker rmi IMAGE_NAME OR ID
