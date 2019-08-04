@@ -197,3 +197,18 @@ We can user `$ sudo service docker ${command}` or we can use `$ sudo systemctl d
 **Remove image from your local registry**
 
     $ sudo docker rmi IMAGE_NAME OR ID
+## How to build docker image 
+**How to build standard image into your local registry**
+Requirement : 
+ - Directory who contain `Dockerfile` and `entrypoint.sh`
+ - `entrypoint.sh` file must be executable `$ sudo chmod +x entrypoint.sh` 
+ - You have to be in the same directory that contain `Dockerfile` and `entrypoint.sh` then run the build command `$ sudo docker build -t IMAGE_NAME:TAG .`
+
+
+**How to build standard image into your local registry with docker-compose**
+Requirement:
+- `docker-compose.yml` file
+- Directory that contain build file : `Dockerfile` and `entrypoint.sh` (docker-build for example)
+- `entrypoint.sh` mus be executable `$ sudo chmod +x entrypoint.sh`
+- No image instruction needed in `docker-compose.yml`, and it will be replaced with build command
+`image : IMAGE_NAME:TAG` will be replaced with `build : ./docker-build`
