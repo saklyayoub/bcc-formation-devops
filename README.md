@@ -1,6 +1,9 @@
-# How to install docker and docker compose
 
+# How to install docker and docker compose
+![enter image description here](https://community-cdn-digitalocean-com.global.ssl.fastly.net/assets/tutorials/images/large/12122013Docker_twitter.png?1426699613)
 ## Install Docker Engine - Community
+
+![enter image description here](https://png.pngtree.com/svg/20170706/35b0fff19c.svg)
 
 ```
 $ sudo apt-get update
@@ -29,6 +32,9 @@ $ sudo docker run hello-world
 ```
 
 ##  Install Docker Compose
+
+![enter image description here](https://i2.wp.com/foxutech.com/wp-content/uploads/2017/06/Docker-compose-File.png?fit=1000,390&ssl=1)
+
 ```
 sudo curl -L "https://github.com/docker/compose/releases/download/1.24.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 ```
@@ -77,6 +83,9 @@ We can user `$ sudo service docker ${command}` or we can use `$ sudo systemctl d
     $ sudo docker ps -a
 
 ## Control containers
+
+![enter image description here](https://www.networkcomputing.com/sites/default/files/styles/flexslider_full/public/Docker-Teardown-01-%28Introduction%29_0.png?itok=tQ6Djg92)
+
  **Attach local standard input, output, and error streams to a running container**
 
     $ sudo docker container attach [OPTIONS] CONTAINER
