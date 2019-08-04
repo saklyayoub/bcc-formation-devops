@@ -207,6 +207,7 @@ We can user `$ sudo service docker ${command}` or we can use `$ sudo systemctl d
 
     $ sudo docker rmi IMAGE_NAME OR ID
 ## How to build docker image 
+![enter image description here](https://www.itzgeek.com/wp-content/uploads/2017/05/Build-Docker-Images-with-DockerFile.png)
 **How to build standard image into your local registry**
 Requirement : 
  - Directory who contain `Dockerfile` and `entrypoint.sh`
