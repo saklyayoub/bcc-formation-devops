@@ -1,0 +1,77 @@
+
+
+    $ sudo service docker stop
+
+    $ sudo mkdir /root/certs && cd /root/certs
+
+    $ sudo openssl genrsa -aes256 -out ca-key.pem 4096
+
+mind
+
+    $ openssl req -new -x509 -days 365 -key ca-key.pem -sha256 -out ca.pem
+
+TN
+
+TUNIS
+
+BARDO
+
+MIND.ENGINEERING
+
+ME
+
+    $ openssl genrsa -out server-key.pem 4096
+
+    $ openssl req -subj "/CN=$HOST" -sha256 -new -key server-key.pem -out server.csr
+
+    $ echo subjectAltName = DNS:$HOST,IP:41.230.31.197,IP:127.0.0.1 >> extfile.cnf
+
+    $ echo extendedKeyUsage = serverAuth >> extfile.cnf
+
+    $ openssl x509 -req -days 365 -sha256 -in server.csr -CA ca.pem -CAkey ca-key.pem -CAcreateserial -out server-cert.pem -extfile extfile.cnf
+
+mind
+
+    $ openssl genrsa -out key.pem 4096
+
+    $ openssl req -subj '/CN=client' -new -key key.pem -out client.csr
+
+    $ echo extendedKeyUsage = clientAuth >> extfile.cnf
+
+    $ openssl x509 -req -days 365 -sha256 -in client.csr -CA ca.pem -CAkey ca-key.pem -CAcreateserial -out cert.pem -extfile extfile.cnf
+
+mind
+
+    $ chmod -v 0400 ca-key.pem key.pem server-key.pem
+
+    $ chmod -v 0444 ca.pem server-cert.pem cert.pem
+
+    $ dockerd --tlsverify --tlscacert=ca.pem --tlscert=server-cert.pem --tlskey=server-key.pem -H=0.0.0.0:2376
+
+    $ mkdir -p /etc/systemd/system/docker.service.d
+
+    $ nano /etc/systemd/system/docker.service.d/startup_options.conf
+
+
+
+    [Service]
+    
+    ExecStart=
+    
+    ExecStart=/usr/bin/dockerd --tlsverify --tlscacert=/root/certs/ca.pem --tlscert=/root/certs/server-cert.pem --tlskey=/root/certs/server-key.pem -H fd:// -H tcp://0.0.0.0:2376
+
+
+
+    $ sudo systemctl daemon-reload
+
+    $ sudo systemctl restart docker.service
+
+
+
+# then download the necessairy certs files
+
+TLS CA certificate = ca.pem
+
+TLS certificate = cert.pem
+
+TLS key = key.pm
