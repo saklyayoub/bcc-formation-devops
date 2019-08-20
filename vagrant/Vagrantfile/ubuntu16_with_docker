@@ -1,0 +1,67 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+
+Vagrant.configure("2") do |config|
+  # Provider settings
+  config.vm.provider "virtualbox" do |vb|
+  #   # Display the VirtualBox GUI when booting the machine
+  #vb.gui = true
+  #vb.name = "docker"
+  #
+  #   # Customize the amount of memory on the VM:
+  vb.memory = "1024"
+  vb.cpus = 2
+  end
+
+  # Box settings
+  config.vm.box = "ubuntu/xenial64"
+
+  # Network ettings
+  # config.vm.network "forwarded_port", guest: 80, host: 8080
+  # config.vm.network "forwarded_port", guest: 80, host: 8080, host_ip: "127.0.0.1"
+  config.vm.network "forwarded_port", guest: 80, host: 80, host_ip: "192.168.1.99"
+  config.vm.network "forwarded_port", guest: 443, host: 443, host_ip: "192.168.1.99"
+  # config.vm.network "private_network", ip: "192.168.33.10"
+  # config.vm.network "public_network"
+  config.vm.network "public_network", ip: "192.168.1.99"
+  config.vm.hostname = "docker.testvm"
+
+  # SSH Config
+  # config.ssh.insert_key = false # 1
+  # config.ssh.private_key_path = ['~/.vagrant.d/insecure_private_key', '/root/.ssh/id_rsa.pub'] # 2
+  # config.vm.provision "file", source: "/root/.ssh/id_rsa.pub", destination: "~/.ssh/authorized_keys" # 3
+
+  # Folder settings
+  # config.vm.synced_folder ".", "/home/dockerme_home/"
+  
+  # Provisionning setting
+  config.vm.provision "shell", inline: <<-SHELL
+    sudo -s
+    sed -i "/PasswordAuthentication no/c\PasswordAuthentication yes" /etc/ssh/sshd_config
+    sed -i "/PermitRootLogin prohibit-password/c\PermitRootLogin yes" /etc/ssh/sshd_config
+    sed -i "/StrictModes yes/c\#StrictModes no" /etc/ssh/sshd_config
+    echo "root:docker"|chpasswd
+    systemctl restart sshd.service 1>/dev/null 2>&1;
+    echo "[OK] => SSH CONFIG SUCCESSFULLY UPDETED [ssh root@192.168.1.99/docker]"
+    apt-get updte -y
+    apt-get install \
+      apt-transport-https \
+      ca-certificates \
+      curl \
+      gnupg-agent \
+      software-properties-common
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+    add-apt-repository \
+       "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+       $(lsb_release -cs) \
+       stable"
+    apt-get update -y
+    apt-get install docker-ce docker-ce-cli containerd.io -y
+    curl -L "https://github.com/docker/compose/releases/download/1.24.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    chmod +x /usr/local/bin/docker-compose
+    echo "[OK] => FINICHED"
+
+  SHELL
+
+end
