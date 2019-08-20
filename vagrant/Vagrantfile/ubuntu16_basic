@@ -1,0 +1,49 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+
+Vagrant.configure("2") do |config|
+  # Provider settings
+  config.vm.provider "virtualbox" do |vb|
+  #   # Display the VirtualBox GUI when booting the machine
+  vb.gui = true
+  vb.name = "test3vm"
+  #
+  #   # Customize the amount of memory on the VM:
+  vb.memory = "1024"
+  vb.cpus = 2
+  end
+
+  # Box settings
+  config.vm.box = "ubuntu/xenial64"
+
+  # Network ettings
+  # config.vm.network "forwarded_port", guest: 80, host: 8080
+  # config.vm.network "forwarded_port", guest: 80, host: 8080, host_ip: "127.0.0.1"
+  # config.vm.network "private_network", ip: "192.168.33.10"
+  # config.vm.network "public_network"
+  config.vm.network "public_network", ip: "192.168.1.99"
+  config.vm.hostname = "changeme.testvm"
+
+  # SSH Config
+  #config.ssh.username = "ayoub"
+  #config.ssh.password = "ayoub"
+  #config.ssh.port = "22"
+  #config.ssh.insert_key = false # 1
+  #config.ssh.private_key_path = ['~/.vagrant.d/insecure_private_key', '/root/.ssh/id_rsa.pub'] # 2
+  #config.vm.provision "file", source: "/root/.ssh/id_rsa.pub", destination: "~/.ssh/authorized_keys" # 3
+
+  # Folder settings
+  # config.vm.synced_folder "../data", "/vagrant_data"
+  
+  # Provisionning setting
+  config.vm.provision "shell", inline: <<-SHELL
+    sudo sed -i "/PasswordAuthentication no/c\PasswordAuthentication yes" /etc/ssh/sshd_config
+    sudo sed -i "/PermitRootLogin prohibit-password/c\PermitRootLogin yes" /etc/ssh/sshd_config
+    sudo sed -i "/StrictModes yes/c\#StrictModes yes" /etc/ssh/sshd_config
+    echo "root:changeme"|chpasswd
+    sudo systemctl restart sshd.service
+    echo "finished"
+  SHELL
+
+end
